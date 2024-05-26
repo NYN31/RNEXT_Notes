@@ -26,13 +26,38 @@ Streaming with suspense - add loading.js file create Suspense boundaries
 
 - SSR with react and next js helps improve the percieved loading performance by showing a non-interactive page to the user as soon as possible. 
 
-- It still slow. So `Streaming` allow to break down the pages HTML to smaller chunks and progressivily send those chunk to the client. 
+- It still slow. So `Streaming` allow to break down the pages HTML into smaller chunks and progressivily send those chunk to the client. 
 
 
-- This enables partgs of the page to be displayed sooner, without waiting for all the data to load before any UI can be rendered. 
+- This enables parts of the page to be displayed sooner, without waiting for all the data to load before any UI can be rendered. 
 
 - Streaming works well with Reacts component model because each component can be considered a chunk.
 
 - Components that have higher priority or that don't rely on data can be sent first (e.g. layout), and React can start hydration earlier. Components that have lower priority (e.g. reviews, related products) can be sent in the same server request after their data has been fetched.
 
 - Streaming particularly benefical to prevent long data request from blocking the page from rendering as it can reduce the TTFB and FCP. It also helps improve TTI especially on slower devices.
+
+```
+import { Suspense } from 'react'
+import { PostFeed, Weather } from './Components'
+ 
+export default function Posts() {
+  return (
+    <section>
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <PostFeed />
+      </Suspense>
+      <Suspense fallback={<p>Loading weather...</p>}>
+        <Weather />
+      </Suspense>
+    </section>
+  )
+}
+
+```
+
+By using Suspense, there've two benifits:
+
+- **Streaming server rendering:** Progressively rendering HTML from the server to the client
+
+- **Selective Hydration:** React prioritizes what components to make interactive first based on user interaction. 
